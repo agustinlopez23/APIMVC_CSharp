@@ -54,28 +54,28 @@ builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfi
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddSingleton < IEmailSender, EmailService> ();
 //Auth jwt Settings 
+var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
+var tokenValidationParameters = new TokenValidationParameters()
+{
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(key),
+    ValidateIssuer = false,
+    ValidateAudience = false,
+    RequireExpirationTime = false,
+    ValidateLifetime = true,
+};
+builder.Services.AddSingleton(tokenValidationParameters);
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer(jwt =>
-{
-    var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig").Value);
-
-    jwt.SaveToken = true;
-    jwt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        RequireExpirationTime = false,
-        ValidateLifetime = true,
-    };
-
-});
+    .AddJwtBearer(jwt =>
+    {   jwt.SaveToken = true;
+        jwt.TokenValidationParameters = tokenValidationParameters;
+    });
+//Identity settings
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 options.SignIn.RequireConfirmedEmail = false).AddEntityFrameworkStores<ApiFurnitureStoreContext>();
 var app = builder.Build();
