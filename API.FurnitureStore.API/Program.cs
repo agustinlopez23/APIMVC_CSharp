@@ -79,6 +79,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 options.SignIn.RequireConfirmedEmail = false).AddEntityFrameworkStores<ApiFurnitureStoreContext>();
 var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -89,7 +91,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 
 app.MapControllers();
 
