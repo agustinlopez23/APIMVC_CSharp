@@ -11,7 +11,7 @@ namespace API.FurnitureStore.API.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly ApiFurnitureStoreContext _context
+        private readonly ApiFurnitureStoreContext _context;
         public OrdersController(ApiFurnitureStoreContext context)
         {
             _context = context;

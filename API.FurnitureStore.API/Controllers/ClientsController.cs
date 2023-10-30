@@ -1,11 +1,13 @@
 ﻿using API.FurnitureStore.Data;
 using API.FurnitureStore.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.FurnitureStore.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ClientsController : ControllerBase
@@ -16,7 +18,7 @@ namespace API.FurnitureStore.API.Controllers
         {
             _context = context;
         }
-
+        
         [HttpGet]
         public async Task<IEnumerable<Client>> Get()
         {
