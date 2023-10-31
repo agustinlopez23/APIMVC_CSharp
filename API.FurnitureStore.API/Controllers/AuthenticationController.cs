@@ -27,17 +27,21 @@ namespace API.FurnitureStore.API.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ApiFurnitureStoreContext _context;
         private readonly TokenValidationParameters _tokenValidationParameters;
-        public AuthenticationController(UserManager<IdentityUser> userManager, IOptions<JwtConfig> jwtConfig, IEmailSender emailSender, ApiFurnitureStoreContext context, TokenValidationParameters tokenValidationParameters)
+        private readonly ILogger<AuthenticationController> _logger;
+        public AuthenticationController(UserManager<IdentityUser> userManager, IOptions<JwtConfig> jwtConfig, IEmailSender emailSender, ApiFurnitureStoreContext context, TokenValidationParameters tokenValidationParameters, ILogger<AuthenticationController> logger)
         {
             _userManager = userManager;
             _jwtConfig = jwtConfig.Value;
             _emailSender = emailSender;
             _context = context;
             _tokenValidationParameters = tokenValidationParameters;
+            _logger = logger;
+
         }
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegistrationRequestDto request)
         {
+            _logger.LogWarning("User is trying to registering.");
             if (!ModelState.IsValid) return BadRequest();
 
             //Verify if email exist
